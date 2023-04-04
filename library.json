@@ -1,0 +1,12 @@
+{
+  "name": "ADS131M08",
+  "keywords": "SPI, ADC, sensor, ADS, 131M04, 131",
+  "description": "Arduino Library for ADC ADS131M08.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tpcorrea/Arduino-ADS131M08"
+  },
+  "version": "1.0.0", 
+  "frameworks": "arduino",
+  "platforms": ["atmelavr", "espressif8266", "espressif32", "stmstm32"]
+}
