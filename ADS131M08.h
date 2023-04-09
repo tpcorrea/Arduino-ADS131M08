@@ -40,7 +40,7 @@ struct AdcOutput
 #define OSR_256 1
 #define OSR_512 2
 #define OSR_1024 3      // defaulT
-#define OSR_2018 4
+#define OSR_2048 4
 #define OSR_4096 5
 #define OSR_8192 6
 #define OSR_16384 7
