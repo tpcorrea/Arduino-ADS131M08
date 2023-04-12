@@ -8,6 +8,7 @@ ADS131M08::ADS131M08()
 {
   for( uint16_t i = 0U; i < 8; i++){
     this->scaleAdcGain.ch[i].f = 12.0/(8388608.0); // 10*1.2/2^23
+    this->pgaGain[i] = ADS131M08_PgaGain::PGA_1;
   }
   
 }
@@ -244,6 +245,16 @@ void ADS131M08::setScale(uint8_t channel, float scale)
   
 }
 
+float ADS131M08::getScale(uint8_t channel)
+{
+  if (channel > 7) {
+    return 0.0;
+  }
+
+  return this->scaleAdcGain.ch[channel].f;
+  
+}
+
 void ADS131M08::reset()
 {
   digitalWrite(this->resetPin, LOW);
@@ -300,53 +311,71 @@ bool ADS131M08::setChannelEnable(uint8_t channel, uint16_t enable)
   return false;
 }
 
-bool ADS131M08::setChannelPGA(uint8_t channel, uint16_t pga)
-{
+bool ADS131M08::setChannelPGA(uint8_t channel, ADS131M08_PgaGain pga)
+{ uint16_t pgaCode = (uint16_t) pga;
+
   if (channel > 7)
   {
     return false;
   }
   if (channel == 0)
   {
-    writeRegisterMasked(REG_GAIN1, pga, REGMASK_GAIN_PGAGAIN0);
+    writeRegisterMasked(REG_GAIN1, pgaCode, REGMASK_GAIN_PGAGAIN0);
+    this->pgaGain[0] = pga;
     return true;
   }
   else if (channel == 1)
   {
-    writeRegisterMasked(REG_GAIN1, pga << 4, REGMASK_GAIN_PGAGAIN1);
+    writeRegisterMasked(REG_GAIN1, pgaCode << 4, REGMASK_GAIN_PGAGAIN1);
+    this->pgaGain[1] = pga;
     return true;
   }
   else if (channel == 2)
   {
-    writeRegisterMasked(REG_GAIN1, pga << 8, REGMASK_GAIN_PGAGAIN2);
+    writeRegisterMasked(REG_GAIN1, pgaCode << 8, REGMASK_GAIN_PGAGAIN2);
+    this->pgaGain[2] = pga;
     return true;
   }
   else if (channel == 3)
   {
-    writeRegisterMasked(REG_GAIN1, pga << 12, REGMASK_GAIN_PGAGAIN3);
+    writeRegisterMasked(REG_GAIN1, pgaCode << 12, REGMASK_GAIN_PGAGAIN3);
+    this->pgaGain[3] = pga;
     return true;
   }
   if (channel == 4)
   {
-    writeRegisterMasked(REG_GAIN2, pga, REGMASK_GAIN_PGAGAIN4);
+    writeRegisterMasked(REG_GAIN2, pgaCode, REGMASK_GAIN_PGAGAIN4);
+    this->pgaGain[4] = pga;
     return true;
   }
   else if (channel == 5)
   {
-    writeRegisterMasked(REG_GAIN2, pga << 4, REGMASK_GAIN_PGAGAIN5);
+    writeRegisterMasked(REG_GAIN2, pgaCode << 4, REGMASK_GAIN_PGAGAIN5);
+    this->pgaGain[5] = pga;
     return true;
   }
   else if (channel == 6)
   {
-    writeRegisterMasked(REG_GAIN2, pga << 8, REGMASK_GAIN_PGAGAIN6);
+    writeRegisterMasked(REG_GAIN2, pgaCode << 8, REGMASK_GAIN_PGAGAIN6);
+    this->pgaGain[6] = pga;
     return true;
   }
   else if (channel == 7)
   {
-    writeRegisterMasked(REG_GAIN2, pga << 12, REGMASK_GAIN_PGAGAIN7);
+    writeRegisterMasked(REG_GAIN2, pgaCode << 12, REGMASK_GAIN_PGAGAIN7);
+    this->pgaGain[7] = pga;
     return true;
   }
   return false;
+}
+
+ADS131M08_PgaGain ADS131M08::getChannelPGA(uint8_t channel)
+{
+  if(channel > 7)
+  {
+    return ADS131M08_PgaGain::PGA_INVALID;
+  }
+  return this->pgaGain[channel];
 }
 
 void ADS131M08::setGlobalChop(uint16_t global_chop)

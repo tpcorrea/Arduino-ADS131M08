@@ -22,14 +22,18 @@ struct AdcOutput
 #define POWER_MODE_LOW_POWER 1
 #define POWER_MODE_HIGH_RESOLUTION 2 // DEFAULT
 
-#define CHANNEL_PGA_1 0
-#define CHANNEL_PGA_2 1
-#define CHANNEL_PGA_4 2
-#define CHANNEL_PGA_8 3
-#define CHANNEL_PGA_16 4
-#define CHANNEL_PGA_32 5
-#define CHANNEL_PGA_64 6
-#define CHANNEL_PGA_128 7
+enum ADS131M08_PgaGain
+{
+  PGA_1 = 0,
+  PGA_2 = 1,
+  PGA_4 = 2,
+  PGA_8 = 3,
+  PGA_16 = 4,
+  PGA_32 = 5,
+  PGA_64 = 6,
+  PGA_128 = 7,
+  PGA_INVALID
+};
 
 #define INPUT_CHANNEL_MUX_AIN0P_AIN0N 0 // Default
 #define INPUT_CHANNEL_MUX_INPUT_SHORTED 1
@@ -298,7 +302,8 @@ public:
   bool setDrdyStateWhenUnavailable(uint8_t drdyState);
   bool setPowerMode(uint8_t powerMode);
   bool setChannelEnable(uint8_t channel, uint16_t enable);
-  bool setChannelPGA(uint8_t channel, uint16_t pga);
+  bool setChannelPGA(uint8_t channel, ADS131M08_PgaGain pga);
+  ADS131M08_PgaGain getChannelPGA(uint8_t channel);
   void setGlobalChop(uint16_t global_chop);
   void setGlobalChopDelay(uint16_t delay);
   bool setInputChannelSelection(uint8_t channel, uint8_t input);
@@ -306,6 +311,7 @@ public:
   bool setChannelGainCalibration(uint8_t channel, uint32_t gain);
   bool setOsr(uint16_t osr);
   void setScale(uint8_t channel, float scale);
+  float getScale(uint8_t channel);
   void reset();
   uint16_t getId();
   uint16_t getModeReg();
@@ -315,6 +321,7 @@ public:
   AdcOutput readAdcFloat(void);
 
 private:
+  ADS131M08_PgaGain pgaGain[8];
   uint8_t writeRegister(uint8_t address, uint16_t value);
   void writeRegisterMasked(uint8_t address, uint16_t value, uint16_t mask);
   uint16_t readRegister(uint8_t address);
