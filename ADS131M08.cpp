@@ -7,7 +7,7 @@
 ADS131M08::ADS131M08() : csPin(0), drdyPin(0), clkPin(0), misoPin(0), mosiPin(0), resetPin(0)
 {
   for( uint16_t i = 0U; i < 8; i++){
-    fullScale.ch[i].f = 10; // +-10V
+    fullScale.ch[i].f = 1.2; // +-1.2V
     pgaGain[i] = ADS131M08_PgaGain::PGA_1;
     resultFloat.ch[i].f = 0.0;
     resultRaw.ch[i].u[0] = 0U;

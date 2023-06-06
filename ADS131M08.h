@@ -327,7 +327,7 @@ private:
   uint8_t resetPin;
   ADS131M08_PgaGain pgaGain[8];
   AdcOutput fullScale;
-  const float rawToVolts = 1.2/(8388608.0); 
+  const float rawToVolts = 1.0/(8388608.0); 
   AdcOutput resultRaw;
   AdcOutput resultFloat;
 
