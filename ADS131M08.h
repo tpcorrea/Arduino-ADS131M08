@@ -3,15 +3,19 @@
 
 #include "Arduino.h"
 
+
+typedef union {
+    int32_t i;
+    float f;
+    uint16_t u[2];
+} flex32_t;
+
+
 /* Adc Structure. Ch can be read as int32 or float*/
 struct AdcOutput
 {
   uint16_t status;
-  union {
-    int32_t i;
-    float f;
-    uint16_t u[2];
-  } ch[8];
+  flex32_t ch[8];
 };
 
 
@@ -286,12 +290,6 @@ class ADS131M08
 {
 public:
   ADS131M08();
-  uint8_t csPin;
-  uint8_t drdyPin;
-  uint8_t clkPin;
-  uint8_t misoPin;
-  uint8_t mosiPin;
-  uint8_t resetPin;
 
   void begin(uint8_t clk_pin, uint8_t miso_pin, uint8_t mosi_pin, uint8_t cs_pin, uint8_t drdy_pin,  uint8_t reset_pin);
   int8_t isDataReadySoft(byte channel);
@@ -310,8 +308,8 @@ public:
   bool setChannelOffsetCalibration(uint8_t channel, int32_t offset);
   bool setChannelGainCalibration(uint8_t channel, uint32_t gain);
   bool setOsr(uint16_t osr);
-  void setScale(uint8_t channel, float scale);
-  float getScale(uint8_t channel);
+  void setFullScale(uint8_t channel, float scale);
+  float getFullScale(uint8_t channel);
   void reset();
   uint16_t getId();
   uint16_t getModeReg();
@@ -321,14 +319,22 @@ public:
   AdcOutput readAdcFloat(void);
 
 private:
+  uint8_t csPin;
+  uint8_t drdyPin;
+  uint8_t clkPin;
+  uint8_t misoPin;
+  uint8_t mosiPin;
+  uint8_t resetPin;
   ADS131M08_PgaGain pgaGain[8];
+  AdcOutput fullScale;
+  const float rawToVolts = 1.2/(8388608.0); 
+  AdcOutput resultRaw;
+  AdcOutput resultFloat;
+
   uint8_t writeRegister(uint8_t address, uint16_t value);
   void writeRegisterMasked(uint8_t address, uint16_t value, uint16_t mask);
   uint16_t readRegister(uint8_t address);
   float scaleResult(uint8_t);
   AdcOutput scaleResult(void);
-  AdcOutput scaleAdcGain;
-  AdcOutput resultRaw;
-  AdcOutput resultFloat;
 };
 #endif

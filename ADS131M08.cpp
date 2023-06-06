@@ -4,11 +4,14 @@
 
 #define settings SPISettings(1000000, MSBFIRST, SPI_MODE1)
 
-ADS131M08::ADS131M08()
+ADS131M08::ADS131M08() : csPin(0), drdyPin(0), clkPin(0), misoPin(0), mosiPin(0), resetPin(0)
 {
   for( uint16_t i = 0U; i < 8; i++){
-    this->scaleAdcGain.ch[i].f = 12.0/(8388608.0); // 10*1.2/2^23
-    this->pgaGain[i] = ADS131M08_PgaGain::PGA_1;
+    fullScale.ch[i].f = 10; // +-10V
+    pgaGain[i] = ADS131M08_PgaGain::PGA_1;
+    resultFloat.ch[i].f = 0.0;
+    resultRaw.ch[i].u[0] = 0U;
+    resultRaw.ch[i].u[1] = 0U;
   }
   
 }
@@ -235,23 +238,23 @@ bool ADS131M08::setOsr(uint16_t osr)
   }
 }
 
-void ADS131M08::setScale(uint8_t channel, float scale)
+void ADS131M08::setFullScale(uint8_t channel, float scale)
 {
   if (channel > 7) {
     return;
   }
 
-  this->scaleAdcGain.ch[channel].f = scale;
+  this->fullScale.ch[channel].f = scale;
   
 }
 
-float ADS131M08::getScale(uint8_t channel)
+float ADS131M08::getFullScale(uint8_t channel)
 {
   if (channel > 7) {
     return 0.0;
   }
 
-  return this->scaleAdcGain.ch[channel].f;
+  return this->fullScale.ch[channel].f;
   
 }
 
@@ -634,7 +637,7 @@ float ADS131M08::scaleResult(uint8_t num)
     return 0.0;
   }
   
-  return this->resultFloat.ch[num].f = (float)(this->resultRaw.ch[num].i * this->scaleAdcGain.ch[num].f);
+  return this->resultFloat.ch[num].f = (float)(this->resultRaw.ch[num].i * rawToVolts * this->fullScale.ch[num].f);
 }
 
 AdcOutput ADS131M08::scaleResult(void)
