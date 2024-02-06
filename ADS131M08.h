@@ -8,6 +8,7 @@ typedef union {
     int32_t i;
     float f;
     uint16_t u[2];
+    uint8_t b[4];
 } flex32_t;
 
 
