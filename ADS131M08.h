@@ -54,6 +54,14 @@ enum ADS131M08_PgaGain
 #define OSR_8192 6
 #define OSR_16384 7
 
+#define WAIT_TIME_128 856  
+#define WAIT_TIME_256 1112
+#define WAIT_TIME_512 1624
+#define WAIT_TIME_1024 2648
+#define WAIT_TIME_2048 4696
+#define WAIT_TIME_4096 8792
+#define WAIT_TIME_8192 16984
+#define WAIT_TIME_16384 33368
 
 // Commands
 #define CMD_NULL 0x0000 // This command gives the STATUS REGISTER
