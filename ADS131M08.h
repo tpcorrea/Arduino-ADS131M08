@@ -2,7 +2,7 @@
 #define ADS131M08_h
 
 #include "Arduino.h"
-
+#include "SPI.h"
 
 typedef union {
     int32_t i;
@@ -339,6 +339,7 @@ private:
   const float rawToVolts = 1.0/(8388608.0); 
   AdcOutput resultRaw;
   AdcOutput resultFloat;
+  SPIClass spi;
 
   uint8_t writeRegister(uint8_t address, uint16_t value);
   void writeRegisterMasked(uint8_t address, uint16_t value, uint16_t mask);

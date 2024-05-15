@@ -1,6 +1,5 @@
 #include "Arduino.h"
 #include "ADS131M08.h"
-#include "SPI.h"
 
 #define settings SPISettings(1000000, MSBFIRST, SPI_MODE1)
 
@@ -28,26 +27,26 @@ uint8_t ADS131M08::writeRegister(uint8_t address, uint16_t value)
 
   cmd = (CMD_WRITE_REG) | (address << 7) | 0;
 
-  //res = SPI.transfer16(cmd);
-  SPI.transfer16(cmd);
-  SPI.transfer(0x00);
+  //res = spi.transfer16(cmd);
+  spi.transfer16(cmd);
+  spi.transfer(0x00);
 
-  SPI.transfer16(value);
-  SPI.transfer(0x00);
+  spi.transfer16(value);
+  spi.transfer(0x00);
 
   for(int i = 0; i < 8; i++)
   {
-    SPI.transfer16(0x0000);
-    SPI.transfer(0x00);
+    spi.transfer16(0x0000);
+    spi.transfer(0x00);
   }
 
-  res = SPI.transfer16(0x0000);
-  SPI.transfer(0x00);
+  res = spi.transfer16(0x0000);
+  spi.transfer(0x00);
 
   for(int i = 0; i < 9; i++)
   {
-    SPI.transfer16(0x0000);
-    SPI.transfer(0x00);
+    spi.transfer16(0x0000);
+    spi.transfer(0x00);
   }
 
   delayMicroseconds(1);
@@ -92,23 +91,23 @@ uint16_t ADS131M08::readRegister(uint8_t address)
   digitalWrite(csPin, LOW);
   delayMicroseconds(1);
 
-  //data = SPI.transfer16(cmd);
-  SPI.transfer16(cmd);
-  SPI.transfer(0x00);
+  //data = spi.transfer16(cmd);
+  spi.transfer16(cmd);
+  spi.transfer(0x00);
 
   for(int i = 0; i < 9; i++)
   {
-    SPI.transfer16(0x0000);
-    SPI.transfer(0x00);
+    spi.transfer16(0x0000);
+    spi.transfer(0x00);
   }
 
-  data = SPI.transfer16(0x0000);
-  SPI.transfer(0x00);
+  data = spi.transfer16(0x0000);
+  spi.transfer(0x00);
 
   for(int i = 0; i < 9; i++)
   {
-    SPI.transfer16(0x0000);
-    SPI.transfer(0x00);
+    spi.transfer16(0x0000);
+    spi.transfer(0x00);
   }
   
   delayMicroseconds(1);
@@ -126,9 +125,9 @@ void ADS131M08::begin(uint8_t clk_pin, uint8_t miso_pin, uint8_t mosi_pin, uint8
   mosiPin = mosi_pin;
   resetPin = reset_pin;
 
-  SPI = SPIClass(mosi_pin, miso_pin, clk_pin, cs_pin);
-  SPI.begin();
-  SPI.beginTransaction(settings);
+  spi = SPIClass(mosi_pin, miso_pin, clk_pin, cs_pin);
+  spi.begin();
+  spi.beginTransaction(settings);
   // Configure chip select as an output
   pinMode(csPin, OUTPUT);
   pinMode(resetPin, OUTPUT);
@@ -602,17 +601,17 @@ AdcOutput ADS131M08::readAdcRaw(void)
   digitalWrite(csPin, LOW);
   delayMicroseconds(1);
 
-  x = SPI.transfer(0x00);
-  x2 = SPI.transfer(0x00);
-  SPI.transfer(0x00);
+  x = spi.transfer(0x00);
+  x2 = spi.transfer(0x00);
+  spi.transfer(0x00);
 
   this->resultRaw.status = ((x << 8) | x2);
 
   for(int i = 0; i<8; i++)
   {
-    x = SPI.transfer(0x00);
-    x2 = SPI.transfer(0x00);
-    x3 = SPI.transfer(0x00);
+    x = spi.transfer(0x00);
+    x2 = spi.transfer(0x00);
+    x3 = spi.transfer(0x00);
 
     aux = (((x << 16) | (x2 << 8) | x3) & 0x00FFFFFF);
     if (aux > 0x7FFFFF)
